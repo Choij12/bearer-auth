@@ -1,0 +1,32 @@
+'use strict';
+
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
+const SECRET = process.env.SECRET || 'secretstringfortesting';
+
+const User = (sequelize, DataTypes) => sequelize.define('User', {
+
+    username: { 
+      type: DataTypes.STRING, 
+      allowNull: false, 
+      unique: true },
+
+    password: { 
+      type: DataTypes.STRING, 
+      allowNull: false, 
+    },
+
+    token: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        let payload = {
+          username: this.username
+        }
+        return jwt.sign(payload, SECRET);
+      }
+    }
+  });
+
+
+module.exports = User;
